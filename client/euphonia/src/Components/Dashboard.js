@@ -1,10 +1,14 @@
+// Modules
+import SpotifyWebApi from "spotify-web-api-node"
+import axios from "axios"
+// Hooks
 import { useState, useEffect } from "react"
+// Components
 import useAuth from "./useAuth"
 import Player from "./Player"
 import TrackSearchResult from "./TrackSearchResult"
 import Selection from "./Selection"
-import SpotifyWebApi from "spotify-web-api-node"
-import axios from "axios"
+import ToggleSwitch from "./ToggleSwitch"
 
 const spotifyApi = new SpotifyWebApi({
     clientId: '0f4b9eb9ae8b479bb20f5cb8d21d54f9',
@@ -17,6 +21,7 @@ export default function Dashboard({ code }) {
     const [selectedTracks, setSelectedTracks] = useState([])
     const [playingTrack, setPlayingTrack] = useState()
     const [lyrics, setLyrics] = useState("")
+    const [searchParam, setSearchParam] = useState()
 
     function playTrack(track) {
         setPlayingTrack(track)
@@ -31,19 +36,27 @@ export default function Dashboard({ code }) {
 
     useEffect(() => {
         if(!selectedTracks) return
+        if(!accessToken) return
+        const seedTracks = []
+        const seedArtists = []
+    
         selectedTracks.forEach(track=>{
-            seed_tracks.push(track.id)
-            seed_genres.push([...track.genres])
-            if (track.artists?.length > 1){
-                
-
-            }
-            track.artists?.id
+            seedTracks.push(track.id)
+            seedArtists.push(track.artistId)
         })
+        console.log('seed tracks:', seedTracks)
+        console.log('seed artists:', seedArtists)
         spotifyApi.getRecommendations({
-            seed_artists:[],
-            seed_tracks:[],
-            seed_genres:[]
+            // seed_artists:seedArtists,
+            // seed_tracks:seedTracks,
+            // min_energy: 0.4,
+            seed_artists: seedArtists,
+            // min_popularity: 50
+        }).then(data=>{
+            const recommendations = data.body;
+            console.log('recommendations are ', recommendations)
+        }).catch(error=>{
+            console.log(error.message)
         })
 
     },[selectedTracks])
@@ -76,6 +89,7 @@ export default function Dashboard({ code }) {
             if (cancel) return
             setSearchResults(
                 res.body.tracks.items.map(track => {
+                    console.log(track)
                     const smallestAlbumImage = track.album.images.reduce(
                         (smallest, image) => {
                             if (image.height < smallest.height) return image
@@ -85,9 +99,11 @@ export default function Dashboard({ code }) {
                     )
                     return {
                         artist: track.artists[0].name,
+                        artistId: track.artists[0].id,
                         title: track.name,
                         uri: track.uri,
                         albumUrl: smallestAlbumImage.url,
+                        id:track.id
                     }
                 })
             )
@@ -105,6 +121,7 @@ export default function Dashboard({ code }) {
                 onChange={e => setSearch(e.target.value)}
             />
             <div>
+                <ToggleSwitch label='Track/Artist'/>
                 {searchResults.map(track => (
                 <TrackSearchResult
                 track={track}

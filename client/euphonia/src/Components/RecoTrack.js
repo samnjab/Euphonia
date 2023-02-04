@@ -1,10 +1,9 @@
 import React from "react"
 
-export default function TrackSearchResult({ track, selectTrack}) {
+export default function TrackSearchResult({ track, playTrack }) {
     function handleSelect() {
         console.log('selected track is ', track)
-        selectTrack(track)
-        
+        playTrack(track)
     }
 
     return ( 

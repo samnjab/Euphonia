@@ -38,11 +38,31 @@ html { box-sizing: border-box;}
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* .slider {
+  -webkit-appearance: none;
+  height:0.6em;
+  background-color: #FF0054;
+  border-radius: 5px;
+  background-image: linear-gradient(to right,#390099, #FF0054);
+
 }
+
+input::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  background-color: #F7BFBE ;
+  border-radius:50%;
+} */
+
+.sliders{
+  margin:1rem;
+  width:800px;
+  height:800px;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+

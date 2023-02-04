@@ -14,11 +14,18 @@
     background-color: #ced4da;
     width: 100%;
     z-index: 1;
+    position:absolute;
+    top:0;
+    left:0;
 }
 
 .sliderRange {
     background-color: #9fe5e1;
     z-index: 2;
+    width:100%;
+    position:absolute;
+    top:0;
+    left:0;
 }
 
 /* Removing the default appearance */
@@ -34,6 +41,8 @@
     height: 0;
     width: 200px;
     outline: none;
+    top:2px;
+    left:0;
 }
 
 .thumbZindex3 {
@@ -52,10 +61,10 @@
     background-color: #f1f5f7;
     border: none;
     border-radius: 50%;
-    box-shadow: 0 0 1px 1px #ced4da;
+    /* box-shadow: 0 0 1px 1px #ced4da; */
     cursor: pointer;
-    height: 18px;
-    width: 18px;
+    height: 15px;
+    width: 15px;
     margin-top: 4px;
     pointer-events: all;
     position: relative;
@@ -66,11 +75,25 @@
     background-color: #f1f5f7;
     border: none;
     border-radius: 50%;
-    box-shadow: 0 0 1px 1px #ced4da;
+    /* box-shadow: 0 0 1px 1px #ced4da; */
     cursor: pointer;
-    height: 18px;
-    width: 18px;
+    height: 15px;
+    width: 15px;
     margin-top: 4px;
     pointer-events: all;
     position: relative;
+}
+label:first-of-type{
+    position:absolute;
+    top:10px;
+    left:0;
+}
+label:nth-of-type(2n){
+    position:absolute;
+    top:10px;
+    right:0;
+
+}
+.slider p{
+    margin:2rem 0;
 }

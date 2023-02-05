@@ -48,7 +48,7 @@ export default function Dashboard({ code }) {
 
     return (
         <div>
-            <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
+            <ApiSearch param={'track'} spotifyApi={spotifyApi} accessToken={accessToken} />
             <ToggleSwitch label='Track/Artist'/>
             {/* <label htmlFor='energy'>Energy</label>
             <input type='range' className="slider" id='energy'/> 

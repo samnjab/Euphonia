@@ -25,10 +25,22 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     const handleRecoParam = (recoParam, lower, upper) => {
         console.log('lower is', lower/100)
         console.log('upper is', upper/100)
+        let min = lower/100
+        let max = upper/100
+
+        if (recoParam ==='popularity'){
+            min = lower
+            max = upper  
+            console.log('setting pop params', min, max) 
+        }else if(recoParam==='tempo'){
+            min = lower * 1.6 + 40
+            max = upper * 1.6 + 40
+            console.log('setting tempo params', min, max) 
+        }
         setRecoParams(
             {
                 ...recoParams,
-                [recoParam]:{min:lower/100, max:upper/100}
+                [recoParam]:{min:min, max:max}
             }
 
         )
@@ -72,12 +84,27 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
         })
         console.log('seed tracks:', seedTracks)
         console.log('seed artists:', seedArtists)
+        console.log('sending reco params:', recoParams)
+        const requestParams = {}
+        for (let key in recoParams){
+            if (recoParams[key]?.min){
+                console.log(recoParams[key.min])
+                requestParams[`min_${key}`] = recoParams[key].min
+            }
+            if (recoParams[key]?.max){
+                requestParams[`max_${key}`] = recoParams[key].max
+            }
+            
+
+        }
+        console.log('request params are', requestParams)
+        
         spotifyApi.getRecommendations({
             // seed_artists:seedArtists,
-            // seed_tracks:seedTracks,
-            // min_energy: 0.4,
-            seed_artists: seedArtists,
-            // min_popularity: 50
+            seed_tracks:seedTracks,
+            ...requestParams
+            
+
         }).then(data => {
             const recommendations = data.body;
             console.log('recommendations are ', recommendations)
@@ -106,7 +133,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             console.log(error.message)
         })
 
-    },[selectedTracks, selectedArtists])
+    },[selectedTracks, selectedArtists, recoParams])
     
     useEffect(() => {
         if (!accessToken) return

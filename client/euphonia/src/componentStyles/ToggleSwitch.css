@@ -44,14 +44,14 @@
 }
 
 .inner:before {
-    content: "Track";
+    content: "Artist";
     padding-left: 20px;
     background-color: #390099;
     color: #fff;
 }
 
 .inner:after {
-    content: "Artist";
+    content: "Track";
     padding-right: 20px;
     background-color: #9E0059;
     color: #fff;

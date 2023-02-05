@@ -20,22 +20,17 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     const [selectedArtists, setSelectedArtists] = useState([])
     const [recommendations, setRecommendations] = useState([])
     const [playingTrack, setPlayingTrack] = useState([])
-    const [recoParams, setRecoParams] = useState({popularity:{}, energy:{}, tempo:{}, acousticness:{}, danceability:{}, instrumentalness:{}, speechiness:{}})
+    const [recoParams, setRecoParams] = useState({popularity:{}, energy:{}, tempo:{}, valence:{},acousticness:{}, danceability:{}, instrumentalness:{}, speechiness:{}})
 
     const handleRecoParam = (recoParam, lower, upper) => {
-        console.log('lower is', lower/100)
-        console.log('upper is', upper/100)
         let min = lower/100
         let max = upper/100
-
         if (recoParam ==='popularity'){
             min = lower
             max = upper  
-            console.log('setting pop params', min, max) 
         }else if(recoParam==='tempo'){
             min = lower * 1.6 + 40
             max = upper * 1.6 + 40
-            console.log('setting tempo params', min, max) 
         }
         setRecoParams(
             {
@@ -44,64 +39,58 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             }
 
         )
-        console.log('reco param is', recoParams)
-
     }
-   
     const handlePlayTrack = (track) => {
         setPlayingTrack(track)
     }
-
     const selectTrack = (track) =>{
-        console.log('selecting track', track)
         // setCurrentTrackSelection(track)
         setSelectedTracks([...selectedTracks, track])
         setTrackSearch([])
         setRevealStatus(false)
-        
-        // setTrackSearch([])
-        // setSearchTrackResults([])
     }
     const selectArtist = (artist) => {
         // setCurrentArtistSelection(artist)
         setSelectedArtists([...selectedArtists, artist])
         setTrackSearch([])
         setRevealStatus(false)
-       
-        // setSearchArtistResults([])
     }
     useEffect(() => {
         if(!accessToken) return
-        console.log(selectedTracks==false && selectedArtists==false)
         if(!selectedTracks && !selectedArtists) return
         console.log(selectedTracks, selectedArtists)
-        const seedTracks = []
-        const seedArtists = []
-    
-        selectedTracks.forEach(track=>{
-            seedTracks.push(track.id)
-            seedArtists.push(track.artistId)
+        // const seedTracks = []
+        const seedTracks = selectedTracks.map(track => {
+            return track.id
         })
+        const seedArtists = selectedArtists.map(artist=>{
+            return artist.id
+        })
+        if (!seedTracks && !seedArtists) return 
+    
+        // selectedTracks.forEach(track=>{
+        //     seedTracks.push(track.id)
+        //     // seedArtists.push(track.artistId)
+        // })
+        // selectedArtists.forEach(artist => {
+        //     seedArtists.push(artist.id)
+        // })
         console.log('seed tracks:', seedTracks)
         console.log('seed artists:', seedArtists)
-        console.log('sending reco params:', recoParams)
         const requestParams = {}
         for (let key in recoParams){
             if (recoParams[key]?.min){
-                console.log(recoParams[key.min])
                 requestParams[`min_${key}`] = recoParams[key].min
             }
             if (recoParams[key]?.max){
                 requestParams[`max_${key}`] = recoParams[key].max
             }
-            
-
         }
         console.log('request params are', requestParams)
-        
         spotifyApi.getRecommendations({
             // seed_artists:seedArtists,
-            seed_tracks:seedTracks,
+            seed_tracks: seedTracks,
+            seed_artists:seedArtists,
             ...requestParams
             
 
@@ -110,7 +99,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             console.log('recommendations are ', recommendations)
             setRecommendations(
                 data.body?.tracks?.map(track => {
-                    console.log(track)
                     const smallestAlbumImage = track.album.images.reduce(
                         (smallest, image) => {
                             if (image.height < smallest.height) return image
@@ -158,7 +146,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             if (cancel) return
             setSearchTrackResults(
                 res.body.tracks.items.map(track => {
-                    console.log(track)
                     const smallestAlbumImage = track.album.images.reduce(
                         (smallest, image) => {
                             if (image.height < smallest.height) return image
@@ -189,26 +176,25 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
         .then(res => {
             if (cancel) return
             console.log(res.body)
-            // setSearchResults(
-            //     // res.body.tracks.items.map(track => {
-            //     //     console.log(track)
-            //     //     const smallestAlbumImage = track.album.images.reduce(
-            //     //         (smallest, image) => {
-            //     //             if (image.height < smallest.height) return image
-            //     //             return smallest
-            //     //         },
-            //     //         track.album.images[0]
-            //     //     )
-            //     //     return {
-            //     //         artist: track.artists[0].name,
-            //     //         artistId: track.artists[0].id,
-            //     //         title: track.name,
-            //     //         uri: track.uri,
-            //     //         albumUrl: smallestAlbumImage.url,
-            //     //         id:track.id
-            //     //     }
-            //     // })
-            // )
+            setSearchArtistResults(
+                res.body.artists.items.map(artist => {
+                    console.log(artist)
+                    const smallestArtistImage = artist.images.reduce(
+                        (smallest, image) => {
+                            if (image.height < smallest.height) return image
+                            return smallest
+                        },
+                        artist.images[0]
+                    )
+                    return {
+                        id: artist.id,
+                        name: artist.name,
+                        uri: artist.uri,
+                        artistImg: smallestArtistImage.url,
+                    }
+                })
+            )
+            console.log(searchArtistResults)
         })
 
         return () => (cancel = true)
@@ -219,7 +205,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             <input
                     type="text"
                     placeholder="Search Songs/Artists"
-                    value={trackSearch}
+                    value={param==='artist' ? artistSearch : trackSearch}
                     onChange={e => param==='artist' ? setArtistSearch(e.target.value) : setTrackSearch(e.target.value) }
                     onClick={e => setRevealStatus(true)}
                 />
@@ -227,6 +213,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'popularity'} />
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'energy'} />
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'tempo'} />
+                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'valence'} />
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
                     <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />

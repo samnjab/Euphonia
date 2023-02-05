@@ -21,8 +21,12 @@ export default function Dashboard({ code }) {
     
    
 
-    const searchBy = (param) => {
-        setSearchParam(param)
+    const searchBy = (e) => {
+        if (e.target.checked){
+            setSearchParam('artist')
+        }else{
+            setSearchParam('track')
+        }
     }
 
     // useEffect(() => {
@@ -48,32 +52,11 @@ export default function Dashboard({ code }) {
 
     return (
         <div>
-            <ApiSearch param={'track'} spotifyApi={spotifyApi} accessToken={accessToken} />
-            <ToggleSwitch label='Track/Artist'/>
-            {/* <label htmlFor='energy'>Energy</label>
-            <input type='range' className="slider" id='energy'/> 
-            <label htmlFor='popularity'>Popularity</label>
-            <input type='range' className="slider" id='popularity'/> 
-            <label htmlFor='tempo'>Tempo</label>
-            <input type='range' className="slider" id='tempo'/> 
-            <label htmlFor='acousticness'>Acousticness</label>
-            <input type='range' className="slider" id='acousticness'/> 
-            <label htmlFor='Danceability'>Danceability</label>
-            <input type='range' className="slider" id='danceability'/> 
-            <label htmlFor='instrumentalness'>instrumentalness</label>
-            <input type='range' className="slider" id='instrumentalness'/> 
-            <label htmlFor='speechiness'>Speechiness</label>
-            <input type='range' className="slider" id='speechiness'/>
-            <label htmlFor='key'>Key</label>
-            <input type='range' className="slider" id='key'/> */}
-            <div>
-                {
-                    
-                    // <Selection selectedTracks={selectedTracks}/>
-                }
-                {/* <Player accessToken={accessToken} trackUri={playingTrack?.uri} /> */}
-
-            </div>
+            <ToggleSwitch 
+            label='Track/Artist'
+            searchBy={searchBy}
+            />
+            <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
         </div>
   )
 }

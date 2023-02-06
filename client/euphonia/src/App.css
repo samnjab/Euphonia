@@ -159,12 +159,41 @@ input::-webkit-slider-thumb{
 }
 .searchBox{
   flex-basis:100%;
+  z-index:6;
 }
 .searchResults{
   position:absolute;
-  top:0;
+  top:50px;
   left:0;
+  width:100%;
+  background-color:#0D0D25;
+  z-index:6;
+  border-radius:15px;
 }
+.trackSearchResult,
+.artistSearchResult{
+  display:flex;
+  width:90%;
+  margin:1rem auto;
+  justify-content:space-between;
+  align-items:center;
+  /* border-top:#FAAE7B solid 1px; */
+  border-bottom: #FAAE7B solid 0.5px;
+  padding:1.75rem 1rem;
+ 
+}
+.trackSearchResult .info,
+.artistSearchResult .info {
+  flex-basis:80%;
+  display: flex;
+  justify-content:space-around;
+  align-items:center;
+}
+.info h5{
+  max-width:8rem;
+  align-text:left;
+}
+
 .recoTrack{
   display:flex;
 }

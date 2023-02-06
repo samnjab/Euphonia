@@ -9,10 +9,9 @@ export default function TrackSearchResult({ artist, selectArtist }) {
         style={{ cursor: "pointer" }}
         className='artistSearchResult'
         onClick={handleSelect}>
-            <img src={artist.artistImg} style={{ height: "64px", width: "64px" }} />
-            <div>
-                <div>{artist.name}</div>
-                {/* <div>{trac.artist}</div> */}
+            <img src={artist.artistImg} style={{ height: "64px", width: "64px" }} className='cover' />
+            <div className='info'>
+                <h5>{artist.name}</h5>
             </div>
         </div>
     )

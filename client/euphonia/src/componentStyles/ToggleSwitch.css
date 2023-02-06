@@ -1,11 +1,11 @@
 .container {
-    text-align: center;
+    text-align: right;
     margin:1rem;
 }
 
 .toggle-switch {
     position: relative;
-    width: 100px;
+    width: 200px;
     display: inline-block;
     text-align: left;
     top: 8px;
@@ -28,8 +28,7 @@
     display: block;
     width: 200%;
     margin-left: -100%;
-    background-color: yellow;
-    transition: margin 0.3s ease-in 0s;
+    transition: margin 0.5s ease 0s;
 }
 
 .inner:before,
@@ -48,9 +47,9 @@
     content: "Artist";
     font-size:0.8rem;
     text-transform:uppercase;
-    /* letter-spacing:1px; */
-    padding-left: 20px;
-    background-color: #0D0D25;
+    letter-spacing:1px;
+    padding-left: 40px;
+    background-color: #FAAE7B;
     color: #fff;
 }
 
@@ -58,9 +57,9 @@
     content: "Track";
     font-size:0.8rem;
     text-transform:uppercase;
-    /* letter-spacing:1px; */
-    padding-right: 20px;
-    background-color: #FAAE7B;
+    letter-spacing:1px;
+    padding-right: 40px;
+    background-color: #0D0D25;
     color: #fff;
     text-align: right;
 }
@@ -76,7 +75,7 @@
     left: -2px;
     border: 0 solid #bbb;
     border-radius: 20px;
-    transition: all 0.3s ease-in 0s;
+    transition: all 0.5s ease 0s;
 }
 
 .checkbox:checked+.label .inner {
@@ -85,5 +84,5 @@
 
 .checkbox:checked+.label .switch {
     /* right: 0px; */
-    left:62px;
+    left:140px;
 }

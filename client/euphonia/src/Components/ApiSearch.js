@@ -251,6 +251,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                 <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
                 <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
                 <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'speechiness'} />
             </div>
             <div className='searchResults'>
             {   revealStatus ? (

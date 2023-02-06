@@ -19,7 +19,7 @@ ul{
 }
 
 body{
-  background-image:linear-gradient(45deg, #753D5C, #683A5C, #5C365C, 10%,#4F335C,#42305B, #362C5B, #29295B);
+  background-image:linear-gradient(60deg, #753D5C, #683A5C, #5C365C, 10%,#4F335C,#42305B, #362C5B, #29295B);
   background-size: 600% 600%;
   animation:animatedGradient 15s infinite linear;
   color:white;
@@ -29,7 +29,7 @@ body{
     background-position:0 0%;
   }
   50%{
-    background-position: 100% 0%;
+    background-position: 100% 20%;
   }
   100%{
     background-position:0% 0%;
@@ -87,6 +87,11 @@ main{
   font-size:1.1rem;
   margin:auto;
 }
+.login a{
+  display:block;
+  width:100%;
+  height:100%;
+}
 .dashboard{
   margin:1rem 0;
 }
@@ -99,7 +104,8 @@ main{
   width:fit-content;
   border-radius:25px;
   padding:0.75rem 1.5rem;
-  font-size:1.1rem;
+  width:100%;
+  font-size:1rem;
   letter-spacing:1px;
   background-color:#0D0D25;
   color:white;
@@ -108,7 +114,7 @@ main{
 }
 input::placeholder{
   font-style:italic;
-  font-size:1.1rem;
+  font-size:1rem;
   letter-spacing:1px;
 }
 
@@ -134,12 +140,32 @@ input::-webkit-slider-thumb{
 
 .sliders{
   margin:1rem;
-  width:800px;
-  height:800px;
+  max-width:75%;
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
+  flex-wrap:wrap;
 
 }
-
+.slider{
+  flex-basis:45%;
+}
+.apiSearch{
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  
+}
+.searchBox{
+  flex-basis:100%;
+}
+.searchResults{
+  position:absolute;
+  top:0;
+  left:0;
+}
+.recoTrack{
+  display:flex;
+}
 

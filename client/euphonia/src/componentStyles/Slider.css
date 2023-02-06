@@ -1,12 +1,12 @@
 .slider {
     position: relative;
-    width: 200px;
+    /* width: 200px; */
 }
 
 .sliderTrack,
 .sliderRange {
     border-radius: 3px;
-    height: 5px;
+    height: 2.5px;
     position: absolute;
 }
 
@@ -15,16 +15,16 @@
     width: 100%;
     z-index: 1;
     position:absolute;
-    top:0;
+    bottom:0;
     left:0;
 }
 
 .sliderRange {
-    background-color: #9fe5e1;
+    background:linear-gradient(to right,#FAAE7B, #0D0D25 60%);
     z-index: 2;
     width:100%;
     position:absolute;
-    top:0;
+    bottom:0;
     left:0;
 }
 
@@ -39,9 +39,9 @@
     pointer-events: none;
     position: absolute;
     height: 0;
-    width: 200px;
+    width: 100%;
     outline: none;
-    top:2px;
+    bottom:-0.5px;
     left:0;
 }
 
@@ -56,44 +56,45 @@
     z-index:5;
 }
 
-/* For Chrome browsers */
+
 .thumb::-webkit-slider-thumb {
     background-color: #f1f5f7;
     border: none;
     border-radius: 50%;
-    /* box-shadow: 0 0 1px 1px #ced4da; */
     cursor: pointer;
-    height: 15px;
-    width: 15px;
-    margin-top: 4px;
+    height: 7px;
+    width: 7px;
+    margin-bottom: 4px;
     pointer-events: all;
     position: relative;
 }
 
-/* For Firefox browsers */
+
+
 .thumb::-moz-range-thumb {
     background-color: #f1f5f7;
     border: none;
     border-radius: 50%;
-    /* box-shadow: 0 0 1px 1px #ced4da; */
     cursor: pointer;
-    height: 15px;
-    width: 15px;
-    margin-top: 4px;
+    height: 7px;
+    width: 7px;
+    margin-bottom: 4px;
     pointer-events: all;
     position: relative;
 }
 label:first-of-type{
     position:absolute;
-    top:10px;
+    bottom:10px;
     left:0;
 }
 label:nth-of-type(2n){
     position:absolute;
-    top:10px;
+    bottom:10px;
     right:0;
 
 }
 .slider p{
-    margin:2rem 0;
+    margin:1rem 0;
+    font-weight:100;
+    font-size:0.9rem;
 }

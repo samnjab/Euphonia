@@ -10,7 +10,7 @@ export default function TrackSearchResult({ track, playTrack }) {
 
       <div
           style={{ cursor: "pointer" }}
-          className='trackSearchResult'
+          className='recoTrack'
           onClick={handleSelect}>
           <img src={track.albumUrl} style={{ height: "64px", width: "64px" }} />
           <div>

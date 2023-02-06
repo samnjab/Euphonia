@@ -1,6 +1,12 @@
-export default function DisplayTrack({track}){
+export default function DisplayTrack({track, deselectTrack}){
+    const handleDeselectTrack = () => {
+        deselectTrack(track)
+    }
     return(
-        <div className="selectedTrack">
+        <div 
+        className="selectedTrack"
+        onClick={handleDeselectTrack}
+        >
             <img src={track.albumUrl} style={{ height: "64px", width: "64px" }} />
             <div>
                 <div>{track.title}</div> 

@@ -10,7 +10,7 @@ export default function Slider({ min, max, handleRecoParam, recoParam}) {
     <>
         <div className="slider">
             <p>{recoParam}</p>
-            <label htmlFor={`min-${recoParam}`}>Min</label>
+            <label htmlFor={`min-${recoParam}`} className='sr-only'>Min</label>
             <input
                 type="range"
                 min={min}
@@ -29,7 +29,7 @@ export default function Slider({ min, max, handleRecoParam, recoParam}) {
                 id={`min-${recoParam}`}
 
             />
-            <label htmlFor={`max-${recoParam}`}>Max</label>
+            <label htmlFor={`max-${recoParam}`} className='sr-only'>Max</label>
             <input
                 type="range"
                 min={min}

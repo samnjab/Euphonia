@@ -51,12 +51,14 @@ export default function Dashboard({ code }) {
     
 
     return (
-        <div>
-            <ToggleSwitch 
-            label='Track/Artist'
-            searchBy={searchBy}
-            />
-            <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
-        </div>
+        <section className='dashboard'>
+            <div className='wrapper'>
+                <ToggleSwitch 
+                label='Track/Artist'
+                searchBy={searchBy}
+                />
+                <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
+            </div>
+        </section>
   )
 }

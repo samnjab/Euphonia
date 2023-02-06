@@ -6,10 +6,10 @@ const AUTH_URL =
 
 export default function Login() {
   return (
-    <div>
-      <a className="btn btn-success btn-lg" href={AUTH_URL}>
-        Login With Spotify
-      </a>
+    <div className="login">
+        <a className="btn btn-success btn-lg" href={AUTH_URL}>
+          Login With Spotify
+        </a>
     </div>
   )
 }

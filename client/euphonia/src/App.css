@@ -7,36 +7,97 @@ html { box-sizing: border-box;}
 
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
-.App {
-  text-align: center;
-  background-color: #9E0059;
+html{
+  color:white;
+}
+a{
+  color:white;
+  text-decoration:none;
+}
+ul{
+  list-style:none;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body{
+  background-image:linear-gradient(45deg, #753D5C, #683A5C, #5C365C, 10%,#4F335C,#42305B, #362C5B, #29295B);
+  background-size: 600% 600%;
+  animation:animatedGradient 15s infinite linear;
+  color:white;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@keyframes animatedGradient{
+  0%{
+    background-position:0 0%;
+  }
+  50%{
+    background-position: 100% 0%;
+  }
+  100%{
+    background-position:0% 0%;
   }
 }
 
+.App {
+  text-align: center;
+  font-family:'Montserrat';
+  font-size:125%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+}
+
+
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  /* background-color: #282c34; */
+  min-height: 10vh;
+  width:100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-family:'Montserrat';
+}
+h1{
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-weight:500;
+}
+header h2{
+  font-weight:100;
+  font-style:italic;
+  font-size:20px;
+  color:white;
+}
+main{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:100vw;
+  min-height:50vh;
+}
+.login{
+  background-color:#FAAE7B;
+  color:white;
+  width:fit-content;
+  border-radius:25px;
+  padding:0.75rem 1.5rem;
+  font-size:1.1rem;
+  margin:auto;
+}
+.dashboard{
+  margin:1rem 0;
+}
+.wrapper{
+  width:90%;
+  margin:0 auto;
+  max-width:1500px;
 }
 
-.App-link {
-  color: #61dafb;
-}
+
+
 
 /* .slider {
   -webkit-appearance: none;

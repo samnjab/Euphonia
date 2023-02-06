@@ -43,6 +43,22 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     const handlePlayTrack = (track) => {
         setPlayingTrack(track)
     }
+
+    const deselectTrack = (toBeRemovedTrack) =>{
+        setSelectedTracks(
+            selectedTracks.filter(track => {
+                return track !== toBeRemovedTrack
+            })
+        )
+    }
+    const deselectArtist = (toBeRemovedArtist) =>{
+        setSelectedTracks(
+            selectedArtists.filter(artist => {
+                return artist !== toBeRemovedArtist
+            })
+        )
+    }
+
     const selectTrack = (track) =>{
         // setCurrentTrackSelection(track)
         setSelectedTracks([...selectedTracks, track])
@@ -57,8 +73,14 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     }
     useEffect(() => {
         if(!accessToken) return
-        if(!selectedTracks && !selectedArtists) return
         console.log(selectedTracks, selectedArtists)
+        if(selectedTracks==[] && selectedArtists==[]) {
+            console.log('emptying recommendations')
+            setRecommendations([])
+            return 
+        }
+        console.log('selected tracks are',selectedTracks,'selected artists are', selectedArtists)
+        let start = true
         // const seedTracks = []
         const seedTracks = selectedTracks.map(track => {
             return track.id
@@ -66,15 +88,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
         const seedArtists = selectedArtists.map(artist=>{
             return artist.id
         })
-        if (!seedTracks && !seedArtists) return 
-    
-        // selectedTracks.forEach(track=>{
-        //     seedTracks.push(track.id)
-        //     // seedArtists.push(track.artistId)
-        // })
-        // selectedArtists.forEach(artist => {
-        //     seedArtists.push(artist.id)
-        // })
         console.log('seed tracks:', seedTracks)
         console.log('seed artists:', seedArtists)
         const requestParams = {}
@@ -87,39 +100,51 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             }
         }
         console.log('request params are', requestParams)
-        spotifyApi.getRecommendations({
-            // seed_artists:seedArtists,
-            seed_tracks: seedTracks,
-            seed_artists:seedArtists,
-            ...requestParams
+        if (!seedTracks && !seedArtists){
+            console.log('emptying recommendations')
+            setRecommendations([])
+            return 
+        } 
+        else{
+            console.log('sending seed tracks:', seedTracks)
             
-
-        }).then(data => {
-            const recommendations = data.body;
-            console.log('recommendations are ', recommendations)
-            setRecommendations(
-                data.body?.tracks?.map(track => {
-                    const smallestAlbumImage = track.album.images.reduce(
-                        (smallest, image) => {
-                            if (image.height < smallest.height) return image
-                            return smallest
-                        },
-                        track.album.images[0]
-                    )
-                    return {
-                        artist: track.artists[0].name,
-                        artistId: track.artists[0].id,
-                        title: track.name,
-                        uri: track.uri,
-                        albumUrl: smallestAlbumImage.url,
-                        id:track.id
-                    }
-                })
-            )
-
-        }).catch(error=>{
-            console.log(error.message)
-        })
+            spotifyApi.getRecommendations({
+                // seed_artists:seedArtists,
+                seed_tracks: seedTracks,
+                seed_artists:seedArtists,
+                ...requestParams
+                
+    
+            }).then(data => {
+                if (!start) return
+                const recommendations = data.body;
+                console.log('recommendations are ', recommendations)
+                setRecommendations(
+                    data.body?.tracks?.map(track => {
+                        const smallestAlbumImage = track.album.images.reduce(
+                            (smallest, image) => {
+                                if (image.height < smallest.height) return image
+                                return smallest
+                            },
+                            track.album.images[0]
+                        )
+                        return {
+                            artist: track.artists[0].name,
+                            artistId: track.artists[0].id,
+                            title: track.name,
+                            uri: track.uri,
+                            albumUrl: smallestAlbumImage.url,
+                            id:track.id
+                        }
+                    })
+                )
+    
+            }).catch(error=>{
+                // console.log(error.message)
+                return 
+            })
+        }
+        return () => start = false
 
     },[selectedTracks, selectedArtists, recoParams])
     
@@ -140,10 +165,10 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     useEffect(() => {
         if (!trackSearch) return setSearchTrackResults([])
         if (!accessToken) return
-        let cancel = false
+        let start = true
         spotifyApi.searchTracks(trackSearch)
         .then(res => {
-            if (cancel) return
+            if (!start) return
             setSearchTrackResults(
                 res.body.tracks.items.map(track => {
                     const smallestAlbumImage = track.album.images.reduce(
@@ -165,63 +190,69 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             )
         })
 
-        return () => (cancel = true)
+        return () => (start = false)
     }, [trackSearch, accessToken])
     
     useEffect(() => {
         if (!artistSearch) return setSearchArtistResults([])
         if (!accessToken) return
-        let cancel = false
+        let start = true
         spotifyApi.searchArtists(artistSearch)
         .then(res => {
-            if (cancel) return
-            console.log(res.body)
+            if (!start) return
             setSearchArtistResults(
                 res.body.artists.items.map(artist => {
-                    console.log(artist)
-                    const smallestArtistImage = artist.images.reduce(
-                        (smallest, image) => {
-                            if (image.height < smallest.height) return image
-                            return smallest
-                        },
-                        artist.images[0]
-                    )
+                    let pickedImg = artist.images[0]
+                    try{
+                        const smallestArtistImage = artist.images.reduce(
+                            (smallest, image) => {
+                                if (image.height < smallest.height) return image
+                                return smallest
+                            },
+                            artist.images[0]
+                        )
+                        pickedImg = smallestArtistImage.url
+                        
+                    }
+                    catch{
+                        console.log('could not reduce')
+
+                    }
                     return {
                         id: artist.id,
                         name: artist.name,
                         uri: artist.uri,
-                        artistImg: smallestArtistImage.url,
+                        artistImg: pickedImg
                     }
                 })
             )
-            console.log(searchArtistResults)
+            
         })
 
-        return () => (cancel = true)
+        return () => (start = false)
     }, [artistSearch, accessToken])
 
     return(
-        <div>
-            <input
-                    type="text"
-                    placeholder="Search Songs/Artists"
-                    value={param==='artist' ? artistSearch : trackSearch}
-                    onChange={e => param==='artist' ? setArtistSearch(e.target.value) : setTrackSearch(e.target.value) }
-                    onClick={e => setRevealStatus(true)}
-                />
-                <div className='sliders'>
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'popularity'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'energy'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'tempo'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'valence'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
-                    <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />
-
-                </div>
-
-
-
+        <div className='apiSearch'>
+            <form className='searchBox'>
+                <input
+                        type="text"
+                        placeholder="Search Songs/Artists"
+                        value={param==='artist' ? artistSearch : trackSearch}
+                        onChange={e => param==='artist' ? setArtistSearch(e.target.value) : setTrackSearch(e.target.value) }
+                        onClick={e => setRevealStatus(true)}
+                    />
+            </form>
+            <div className='sliders'>
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'popularity'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'energy'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'tempo'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'valence'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />
+            </div>
+            <div className='searchResults'>
             {   revealStatus ? (
                     param ==='artist' ? 
                     searchArtistResults.map(artist => {
@@ -246,20 +277,31 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             {
                 param === 'artist' ? 
                 selectedArtists.map(artist => {
-                    return <DisplayArtist artist = {artist} /> 
+                    return <DisplayArtist 
+                            artist = {artist}
+                            deselectArtist={deselectArtist} 
+                            key={artist.uri}
+                            /> 
                 })
                 : selectedTracks.map(track => {
-                    return <DisplayTrack track={track} />
+                    return <DisplayTrack 
+                            track={track} 
+                            deselectTrack={deselectTrack}
+                            key={track.uri}
+                            />
                 })
             }
-            {
-               recommendations ? 
-               recommendations.map(track => {
-                   return <RecoTrack track={track} playTrack= {handlePlayTrack} />
-               })
-               :  <div> No recos </div>
-                
-            }
+            </div>
+            <div className='recommendations'>
+                {
+                recommendations ? 
+                recommendations.map(track => {
+                    return <RecoTrack track={track} playTrack= {handlePlayTrack} key={track.uri}/>
+                })
+                :  <div> No recos </div>
+                    
+                }
+            </div>
             <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
 
             

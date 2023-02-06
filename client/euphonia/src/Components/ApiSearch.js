@@ -237,7 +237,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             <form className='searchBox'>
                 <input
                         type="text"
-                        placeholder="Search Songs/Artists"
+                        placeholder="Search by Track/Artist"
                         value={param==='artist' ? artistSearch : trackSearch}
                         onChange={e => param==='artist' ? setArtistSearch(e.target.value) : setTrackSearch(e.target.value) }
                         onClick={e => setRevealStatus(true)}

@@ -1,5 +1,6 @@
 .container {
     text-align: center;
+    margin:1rem;
 }
 
 .toggle-switch {
@@ -45,15 +46,21 @@
 
 .inner:before {
     content: "Artist";
+    font-size:0.8rem;
+    text-transform:uppercase;
+    /* letter-spacing:1px; */
     padding-left: 20px;
-    background-color: #390099;
+    background-color: #0D0D25;
     color: #fff;
 }
 
 .inner:after {
     content: "Track";
+    font-size:0.8rem;
+    text-transform:uppercase;
+    /* letter-spacing:1px; */
     padding-right: 20px;
-    background-color: #9E0059;
+    background-color: #FAAE7B;
     color: #fff;
     text-align: right;
 }

@@ -95,6 +95,22 @@ main{
   margin:0 auto;
   max-width:1500px;
 }
+.searchBox input{
+  width:fit-content;
+  border-radius:25px;
+  padding:0.75rem 1.5rem;
+  font-size:1.1rem;
+  letter-spacing:1px;
+  background-color:#0D0D25;
+  color:white;
+  border:none;
+
+}
+input::placeholder{
+  font-style:italic;
+  font-size:1.1rem;
+  letter-spacing:1px;
+}
 
 
 

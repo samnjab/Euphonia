@@ -7,7 +7,7 @@ import DisplayArtist from "./DisplayArtist"
 import RecoTrack from './RecoTrack'
 import Player from './Player'
 import Slider from './Slider'
-export default function ApiSearch({ param, spotifyApi, accessToken}){
+export default function ApiSearch({ param, spotifyApi, accessToken, user}){
     const [trackSearch, setTrackSearch] = useState('')
     const [artistSearch, setArtistSearch] = useState('')
     const [searchTrackResults, setSearchTrackResults] = useState([])
@@ -268,6 +268,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                         track={track}
                         key={track.uri}
                         selectTrack={selectTrack}
+                        playTrack= {handlePlayTrack}
                     />
                     })
                 )  
@@ -311,6 +312,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                 recommendations.map(track => {
                     return <RecoTrack 
                             track={track} 
+                            user={user}
                             playTrack= {handlePlayTrack} 
                             selectTrack={selectTrack}
                             spotifyApi={spotifyApi} 

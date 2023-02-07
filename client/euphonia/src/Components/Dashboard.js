@@ -16,11 +16,15 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function Dashboard({ code }) {
     const accessToken = useAuth(code)
+    const [user, setUser] = useState({})
 
     const [lyrics, setLyrics] = useState("")
     const [searchParam, setSearchParam] = useState('track')
     
-   
+    const addUser= (user) =>{
+        setUser(user)
+    }
+    
 
     const searchBy = (e) => {
         if (e.target.checked){
@@ -55,13 +59,13 @@ export default function Dashboard({ code }) {
         <section className='dashboard'>
             <div className='wrapper'>
                 <div className='topRow'>
-                    <DisplayMe accessToken={accessToken} spotifyApi={spotifyApi}/>
+                    <DisplayMe accessToken={accessToken} spotifyApi={spotifyApi} addUser={addUser}/>
                     <ToggleSwitch 
                     label='Track/Artist'
                     searchBy={searchBy}
                     />
                 </div>
-                <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
+                <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} user={user} />
             </div>
         </section>
   )

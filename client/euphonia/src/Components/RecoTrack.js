@@ -1,9 +1,11 @@
 import React from "react"
+import {useState} from 'react'
 
 import { FaPlay, FaPlus, FaHeart, FaArrowUp } from "react-icons/fa";
+import Playlists from './Playlists'
 
-
-export default function TrackSearchResult({ track, playTrack, selectTrack, spotifyApi }) {
+export default function TrackSearchResult({ track, playTrack, selectTrack, spotifyApi, user }) {
+    const [added, setAdded] = useState()
     
     function handleAddTrack(){
         spotifyApi.addToMySavedTracks([track.id])
@@ -12,6 +14,10 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
         }).catch(error => {
             console.log(error.message)
         })
+    }
+    function addToPlaylist(){
+        setAdded(track)
+
     }
 
     return ( 
@@ -32,8 +38,14 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
                     <FaHeart className='play' onClick={handleAddTrack}/>
                 </div>
                 <div className='iconBox'>
-                    <FaPlus className='play'onClick={handleAddTrack}/>
+                    <FaPlus className='play'onClick={addToPlaylist}/>
                 </div>
+                {
+                    added ?
+                    <Playlists track={track} spotifyApi={spotifyApi} user={user}/>
+                    :
+                    <></>
+                }
                 <div className='iconBox'>
                     <FaArrowUp className='play'onClick={()=>selectTrack(track)}/>
                 </div>

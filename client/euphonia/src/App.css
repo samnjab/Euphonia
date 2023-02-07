@@ -330,6 +330,25 @@ input::-webkit-slider-thumb{
   justify-content:space-between;
   align-items:center;
   margin:0.75rem 0;
+  position:relative;
+}
+.playlists{
+  max-height:100px;
+  overflow-y: scroll;
+  position:absolute;
+  background-color:#0D0D25;
+  z-index:10;
+  font-size:12px;
+  text-align:left;
+  border-radius:15px;
+  padding:15px;
+  
+}
+.playlist{
+  margin:5px 0;
+}
+.playlist .iconBox{
+
 }
 
 

@@ -1,18 +1,15 @@
 import React from "react"
 
-export default function TrackSearchResult({ track, selectTrack}) {
-    function handleSelect() {
-        console.log('selected track is ', track)
-        selectTrack(track)
-        
-    }
-
+export default function TrackSearchResult({ track, selectTrack, playTrack}) {
+    
     return ( 
 
       <div
           style={{ cursor: "pointer" }}
           className='trackSearchResult'
-          onClick={handleSelect}>
+          onClick={()=>selectTrack(track)}
+          onMouseOver={()=>playTrack(track)}
+          >
           <img src={track.albumUrl} className='cover'/>
           <div className='info'>
               <h5>{track.title}</h5>

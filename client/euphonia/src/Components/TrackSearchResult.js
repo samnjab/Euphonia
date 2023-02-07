@@ -13,7 +13,7 @@ export default function TrackSearchResult({ track, selectTrack}) {
           style={{ cursor: "pointer" }}
           className='trackSearchResult'
           onClick={handleSelect}>
-          <img src={track.albumUrl} style={{ height: "64px", width: "64px" }} className='cover'/>
+          <img src={track.albumUrl} className='cover'/>
           <div className='info'>
               <h5>{track.title}</h5>
               <h5>{track.artist}</h5>

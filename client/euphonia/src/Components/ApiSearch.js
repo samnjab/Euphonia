@@ -2,7 +2,6 @@ import React from "react"
 import { useState, useEffect } from 'react'
 import TrackSearchResult from './TrackSearchResult'
 import ArtistSearchResult from './ArtistSearchResult'
-import Selection from "./Selection"
 import DisplayTrack from "./DisplayTrack"
 import DisplayArtist from "./DisplayArtist"
 import RecoTrack from './RecoTrack'
@@ -43,6 +42,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
     const handlePlayTrack = (track) => {
         setPlayingTrack(track)
     }
+    
 
     const deselectTrack = (toBeRemovedTrack) =>{
         setSelectedTracks(
@@ -61,20 +61,29 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
 
     const selectTrack = (track) =>{
         // setCurrentTrackSelection(track)
-        setSelectedTracks([...selectedTracks, track])
+        const exists = selectedTracks.filter(selectedTrack =>{
+            return selectedTrack.uri === track.uri
+        })
+        if(exists.length == 0){
+            setSelectedTracks([...selectedTracks, track])
+        }
         setTrackSearch([])
         setRevealStatus(false)
     }
     const selectArtist = (artist) => {
+        const exists = selectedArtists.filter(selectedArtist =>{
+            return selectedArtist.uri === artist.uri
+        })
+        if (exists.length == 0){
+            setSelectedArtists([...selectedArtists, artist])
+        }
         // setCurrentArtistSelection(artist)
-        setSelectedArtists([...selectedArtists, artist])
-        setTrackSearch([])
+        setArtistSearch([])
         setRevealStatus(false)
     }
     useEffect(() => {
         if(!accessToken) return
-        console.log(selectedTracks, selectedArtists)
-        if(selectedTracks==[] && selectedArtists==[]) {
+        if(selectedTracks.length == 0 && selectedArtists.length == 0) {
             console.log('emptying recommendations')
             setRecommendations([])
             return 
@@ -100,50 +109,48 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
             }
         }
         console.log('request params are', requestParams)
-        if (!seedTracks && !seedArtists){
-            console.log('emptying recommendations')
-            setRecommendations([])
-            return 
-        } 
-        else{
-            console.log('sending seed tracks:', seedTracks)
+        console.log('sending seed tracks:', seedTracks)
+        
+        spotifyApi.getRecommendations({
+            // seed_artists:seedArtists,
+            seed_tracks: seedTracks,
+            seed_artists:seedArtists,
+            ...requestParams
             
-            spotifyApi.getRecommendations({
-                // seed_artists:seedArtists,
-                seed_tracks: seedTracks,
-                seed_artists:seedArtists,
-                ...requestParams
-                
+
+        }).then(data => {
+            if (!start) return
+            const recommendations = data.body;
+            console.log('recommendations are ', recommendations)
+            setRecommendations(
+                data.body?.tracks?.map(track => {
+                    const smallestAlbumImage = track.album.images.reduce(
+                        (smallest, image) => {
+                            if (image.height < smallest.height) return image
+                            return smallest
+                        },
+                        track.album.images[0]
+                    )
+                    return {
+                        artist: track.artists[0].name,
+                        artistId: track.artists[0].id,
+                        title: track.name,
+                        albumTitle:track.album.name,
+                        uri: track.uri,
+                        albumUrl: smallestAlbumImage.url,
+                        id:track.id,
+                        duration:`${Math.round(track.duration_ms/60000)}:${Math.round(track.duration_ms/1000)%60}`
+                    }
+                })
+            )
+
+        }).catch(error=>{
+            // console.log(error.message)
+            return 
+        })
     
-            }).then(data => {
-                if (!start) return
-                const recommendations = data.body;
-                console.log('recommendations are ', recommendations)
-                setRecommendations(
-                    data.body?.tracks?.map(track => {
-                        const smallestAlbumImage = track.album.images.reduce(
-                            (smallest, image) => {
-                                if (image.height < smallest.height) return image
-                                return smallest
-                            },
-                            track.album.images[0]
-                        )
-                        return {
-                            artist: track.artists[0].name,
-                            artistId: track.artists[0].id,
-                            title: track.name,
-                            uri: track.uri,
-                            albumUrl: smallestAlbumImage.url,
-                            id:track.id
-                        }
-                    })
-                )
-    
-            }).catch(error=>{
-                // console.log(error.message)
-                return 
-            })
-        }
+        
+        
         return () => start = false
 
     },[selectedTracks, selectedArtists, recoParams])
@@ -243,16 +250,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                         onClick={e => setRevealStatus(true)}
                     />
             </form>
-            <div className='sliders'>
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'popularity'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'energy'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'tempo'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'valence'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />
-                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'speechiness'} />
-            </div>
+            
             <div className='searchResults'>
             {   revealStatus ? (
                     param ==='artist' ? 
@@ -273,31 +271,50 @@ export default function ApiSearch({ param, spotifyApi, accessToken}){
                     />
                     })
                 )  
-                : <div> results are hidden</div>
-            }
-            {
-                param === 'artist' ? 
-                selectedArtists.map(artist => {
-                    return <DisplayArtist 
-                            artist = {artist}
-                            deselectArtist={deselectArtist} 
-                            key={artist.uri}
-                            /> 
-                })
-                : selectedTracks.map(track => {
-                    return <DisplayTrack 
-                            track={track} 
-                            deselectTrack={deselectTrack}
-                            key={track.uri}
-                            />
-                })
+                : <></>
             }
             </div>
+            <div className='selected'>
+                {   
+                    param === 'artist' ? 
+                    selectedArtists.map(artist => {
+                        return <DisplayArtist 
+                                artist = {artist}
+                                deselectArtist={deselectArtist} 
+                                key={artist.uri}
+                                /> 
+                    })
+                    : selectedTracks.map(track => {
+                        return <DisplayTrack 
+                                track={track} 
+                                deselectTrack={deselectTrack}
+                                key={track.uri}
+                                />
+                    })
+                }
+
+            </div>
+            <div className='sliders'>
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'popularity'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'energy'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'tempo'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'valence'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'acousticness'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'instrumentalness'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'danceability'} />
+                <Slider min={0} max={100} handleRecoParam={handleRecoParam} recoParam={'speechiness'} />
+            </div>
+            
             <div className='recommendations'>
                 {
                 recommendations ? 
                 recommendations.map(track => {
-                    return <RecoTrack track={track} playTrack= {handlePlayTrack} key={track.uri}/>
+                    return <RecoTrack 
+                            track={track} 
+                            playTrack= {handlePlayTrack} 
+                            selectTrack={selectTrack}
+                            spotifyApi={spotifyApi} 
+                            key={track.uri}/>
                 })
                 :  <div> No recos </div>
                     

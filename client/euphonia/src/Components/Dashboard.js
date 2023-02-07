@@ -8,7 +8,7 @@ import useAuth from "./useAuth"
 import Player from "./Player"
 import ApiSearch from "./ApiSearch"
 import ToggleSwitch from "./ToggleSwitch"
-import Selection from "./Selection"
+import DisplayMe from './DisplayMe'
 
 const spotifyApi = new SpotifyWebApi({
     clientId: '0f4b9eb9ae8b479bb20f5cb8d21d54f9',
@@ -16,6 +16,7 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function Dashboard({ code }) {
     const accessToken = useAuth(code)
+
     const [lyrics, setLyrics] = useState("")
     const [searchParam, setSearchParam] = useState('track')
     
@@ -53,10 +54,13 @@ export default function Dashboard({ code }) {
     return (
         <section className='dashboard'>
             <div className='wrapper'>
-                <ToggleSwitch 
-                label='Track/Artist'
-                searchBy={searchBy}
-                />
+                <div className='topRow'>
+                    <DisplayMe accessToken={accessToken} spotifyApi={spotifyApi}/>
+                    <ToggleSwitch 
+                    label='Track/Artist'
+                    searchBy={searchBy}
+                    />
+                </div>
                 <ApiSearch param={searchParam} spotifyApi={spotifyApi} accessToken={accessToken} />
             </div>
         </section>

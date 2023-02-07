@@ -19,18 +19,20 @@ ul{
 }
 
 body{
-  background-image:linear-gradient(60deg, #753D5C, #683A5C, #5C365C, 10%,#4F335C,#42305B, #362C5B, #29295B);
+  background-image:linear-gradient(30deg, #753D5C, #29295B);
   background-size: 600% 600%;
-  animation:animatedGradient 15s infinite linear;
+  animation:animatedGradient 25s infinite linear;
   color:white;
 }
 @keyframes animatedGradient{
   0%{
     background-position:0 0%;
   }
+  
   50%{
-    background-position: 100% 20%;
+    background-position: 100% 0%;
   }
+  
   100%{
     background-position:0% 0%;
   }
@@ -93,12 +95,43 @@ main{
   height:100%;
 }
 .dashboard{
+  width:100%;
   margin:1rem 0;
 }
 .wrapper{
   width:90%;
   margin:0 auto;
-  max-width:1500px;
+  max-width:1000px;
+}
+.topRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:0.5rem;
+}
+.userInfo{
+  background-color:#FAAE7B;
+  color:white;
+  width:fit-content;
+  border-radius:25px;
+  padding:0.75rem 2rem;
+  margin:0 0.5rem 1rem 0;
+  display:inline-block;
+  align-self:flex-start;
+  
+  
+}
+.username{
+  font-size:0.8rem;
+  margin:0;
+}
+.userEmail{
+  font-size:0.8rem;
+  margin:0;
+  display:none;
+}
+.userInfo:hover .userEmail{
+  display:block;
 }
 .searchBox input{
   width:fit-content;
@@ -140,7 +173,7 @@ input::-webkit-slider-thumb{
 
 .sliders{
   margin:1rem;
-  max-width:75%;
+  max-width:100%;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
@@ -153,6 +186,7 @@ input::-webkit-slider-thumb{
 .apiSearch{
   position:relative;
   display:flex;
+  flex-direction:column;
   flex-wrap:wrap;
   justify-content:center;
   
@@ -169,6 +203,9 @@ input::-webkit-slider-thumb{
   background-color:#0D0D25;
   z-index:6;
   border-radius:15px;
+  max-height:300px;
+  /* overflow:auto; */
+  overflow-y: scroll;
 }
 .trackSearchResult,
 .artistSearchResult{
@@ -180,8 +217,72 @@ input::-webkit-slider-thumb{
   /* border-top:#FAAE7B solid 1px; */
   border-bottom: #FAAE7B solid 0.5px;
   padding:1.75rem 1rem;
- 
 }
+.cover{
+  height:64px;
+  width:64px;
+  margin:0 1rem;
+}
+.icons{
+  display:flex;
+  margin:0 1rem;
+  flex-basis:10%;
+  flex-grow:0;
+}
+.album{
+  flex-basis:30%;
+  margin:0 5px;
+  font-size:0.8rem;
+  text-align:left;
+}
+.duration{
+  flex-basis:5%;
+  margin:0 5px;
+  flex-grow:0;
+  text-align:right;
+  font-size:0.8rem;
+}
+.icons .iconBox{
+  margin:0;
+
+}
+.play{
+  font-size:1rem;
+}
+.iconBox{
+  /* background-color:#FAAE7B; */
+  border-radius:50%;
+  height:32px;
+  width:32px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 0.5rem;
+  transition: 0.5s ease border;
+  /* border: rgba(1,1,1,0) solid 0.5px; */
+}
+/* .iconBox:hover{
+  border: #0D0D25 solid 0.5px;
+} */
+.iconBox svg{
+  transition: color 0.5s ease;
+}
+.iconBox:hover svg{
+  color:#FAAE7B;
+}
+.info {
+  flex-basis:30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.info h5{
+  margin:5px;
+}
+.artist{
+  font-size:0.8rem;
+}
+
 .trackSearchResult .info,
 .artistSearchResult .info {
   flex-basis:80%;
@@ -190,11 +291,45 @@ input::-webkit-slider-thumb{
   align-items:center;
 }
 .info h5{
-  max-width:8rem;
-  align-text:left;
+  /* max-width:8rem; */
+  text-align:left;
+  
+}
+.selected{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  margin:0.5rem 0;
+  background-color:#FAAE7B;
+  border-radius:15px;
+  padding:1rem;
+  max-height:fit-content;
+  
+}
+.selected h5{
+  font-size:0.7rem;
+  margin:2.5px 0;
+}
+.selected .cover{
+  height:30px;
+  width:30px;
+}
+.selectedTrack,
+.selectedArtist{
+  display:flex;
+  align-items:center;
+}
+.recommendations{
+  margin:2rem 0;
+  max-height:90vh;
+  overflow-y: scroll;
 }
 
 .recoTrack{
   display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:0.75rem 0;
 }
+
 

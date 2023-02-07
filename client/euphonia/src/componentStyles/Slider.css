@@ -20,7 +20,7 @@
 }
 
 .sliderRange {
-    background:linear-gradient(to right,#FAAE7B, #0D0D25 60%);
+    background:linear-gradient(to right,white,#FAAE7B 65%);
     z-index: 2;
     width:100%;
     position:absolute;
@@ -41,7 +41,7 @@
     height: 0;
     width: 100%;
     outline: none;
-    bottom:-0.5px;
+    bottom:0.7px;
     left:0;
 }
 

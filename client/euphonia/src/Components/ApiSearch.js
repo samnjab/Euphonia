@@ -13,12 +13,12 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
     const [searchTrackResults, setSearchTrackResults] = useState([])
     const [searchArtistResults, setSearchArtistResults] = useState([])
     const [revealStatus, setRevealStatus] = useState(false)
-    // const [currentTrackSelection, setCurrentTrackSelection] = useState({})
-    // const [currentArtistSelection, setCurrentArtistSelection] = useState({})
     const [selectedTracks, setSelectedTracks] = useState([])
     const [selectedArtists, setSelectedArtists] = useState([])
     const [recommendations, setRecommendations] = useState([])
     const [playingTrack, setPlayingTrack] = useState([])
+    const [playingTracks, setPlayingTracks] = useState([])
+    const [playingStatus, setPlayingStatus]= useState(false)
     const [recoParams, setRecoParams] = useState({popularity:{}, energy:{}, tempo:{}, valence:{},acousticness:{}, danceability:{}, instrumentalness:{}, speechiness:{}})
 
     const handleRecoParam = (recoParam, lower, upper) => {
@@ -39,11 +39,17 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
 
         )
     }
-    const handlePlayTrack = (track) => {
-        setPlayingTrack(track)
-    }
     
 
+    const handlePlayTrack = (track) => {
+        setPlayingTrack(track)
+        setPlayingTracks(recommendations)
+    }
+
+    const changePlay = (e) => {
+        (e) ? setPlayingStatus(true) : setPlayingStatus(false)
+    }
+    
     const deselectTrack = (toBeRemovedTrack) =>{
         setSelectedTracks(
             selectedTracks.filter(track => {
@@ -52,7 +58,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
         )
     }
     const deselectArtist = (toBeRemovedArtist) =>{
-        setSelectedTracks(
+        setSelectedArtists(
             selectedArtists.filter(artist => {
                 return artist !== toBeRemovedArtist
             })
@@ -60,7 +66,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
     }
 
     const selectTrack = (track) =>{
-        // setCurrentTrackSelection(track)
         const exists = selectedTracks.filter(selectedTrack =>{
             return selectedTrack.uri === track.uri
         })
@@ -77,28 +82,22 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
         if (exists.length == 0){
             setSelectedArtists([...selectedArtists, artist])
         }
-        // setCurrentArtistSelection(artist)
         setArtistSearch([])
         setRevealStatus(false)
     }
     useEffect(() => {
         if(!accessToken) return
         if(selectedTracks.length == 0 && selectedArtists.length == 0) {
-            console.log('emptying recommendations')
             setRecommendations([])
             return 
         }
-        console.log('selected tracks are',selectedTracks,'selected artists are', selectedArtists)
         let start = true
-        // const seedTracks = []
         const seedTracks = selectedTracks.map(track => {
             return track.id
         })
         const seedArtists = selectedArtists.map(artist=>{
             return artist.id
         })
-        console.log('seed tracks:', seedTracks)
-        console.log('seed artists:', seedArtists)
         const requestParams = {}
         for (let key in recoParams){
             if (recoParams[key]?.min){
@@ -108,9 +107,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                 requestParams[`max_${key}`] = recoParams[key].max
             }
         }
-        console.log('request params are', requestParams)
-        console.log('sending seed tracks:', seedTracks)
-        
         spotifyApi.getRecommendations({
             // seed_artists:seedArtists,
             seed_tracks: seedTracks,
@@ -121,7 +117,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
         }).then(data => {
             if (!start) return
             const recommendations = data.body;
-            console.log('recommendations are ', recommendations)
             setRecommendations(
                 data.body?.tracks?.map(track => {
                     const smallestAlbumImage = track.album.images.reduce(
@@ -160,15 +155,14 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
         spotifyApi.setAccessToken(accessToken)
     }, [accessToken])
 
+    // lyrics stretch goal to be implemented after project due date:
+
     // function playTrack(track) {
     //     // setPlayingTrack(track)
     //     setSearch("")
     //     setLyrics("")
     // }
 
-   
-    // const [accessToken, setAccessToken] = useState('')
-    // setAccessToken(accessToken)
     useEffect(() => {
         if (!trackSearch) return setSearchTrackResults([])
         if (!accessToken) return
@@ -218,12 +212,10 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                             },
                             artist.images[0]
                         )
-                        pickedImg = smallestArtistImage.url
-                        
+                        pickedImg = smallestArtistImage.url 
                     }
                     catch{
-                        console.log('could not reduce')
-
+                        pickedImg = artist.images[0]
                     }
                     return {
                         id: artist.id,
@@ -241,13 +233,17 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
 
     return(
         <div className='apiSearch'>
-            <form className='searchBox'>
+            <form 
+            className='searchBox'
+            onSubmit={(e) => e.preventDefault()}>
                 <input
                         type="text"
-                        placeholder="Search by Track/Artist"
+                        placeholder={param==='artist' ? 'Search by Artist' : 'Search by Track'}
                         value={param==='artist' ? artistSearch : trackSearch}
                         onChange={e => param==='artist' ? setArtistSearch(e.target.value) : setTrackSearch(e.target.value) }
-                        onClick={e => setRevealStatus(true)}
+                        onClick={e => {
+                            revealStatus ? setRevealStatus(false) : setRevealStatus(true)
+                        }}
                     />
             </form>
             
@@ -269,6 +265,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                         key={track.uri}
                         selectTrack={selectTrack}
                         playTrack= {handlePlayTrack}
+                        changePlay={changePlay}
                     />
                     })
                 )  
@@ -314,6 +311,9 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                             track={track} 
                             user={user}
                             playTrack= {handlePlayTrack} 
+                            playingStatus={playingStatus}
+                            playingTrack={playingTrack}
+                            changePlay={changePlay}
                             selectTrack={selectTrack}
                             spotifyApi={spotifyApi} 
                             key={track.uri}/>
@@ -322,9 +322,20 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                     
                 }
             </div>
-            <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+            {
+                playingTracks ?
+                <Player 
+                accessToken={accessToken} 
+                track={playingTrack} 
+                listOfTracks={playingTracks}
+                playingStatus={playingStatus} 
+                changePlay={changePlay} 
+                changePlayingTrack={(track)=> setPlayingTrack(track)}/>
+                :
+                <></>
 
-            
+            }
+            {/* stretch goal to be implemented after project due date */}
                 {/* {searchTrackResults.length === 0 && (
                 <div style={{ whiteSpace: "pre" }}>
                 {lyrics}

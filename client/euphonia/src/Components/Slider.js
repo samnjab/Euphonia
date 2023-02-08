@@ -18,9 +18,7 @@ export default function Slider({ min, max, handleRecoParam, recoParam}) {
                 value={lower}
                 onChange={(e)=>{
                     const value = Math.min(+e.target.value, upper)
-                    console.log(value)
                     setLower(value)
-                    // e.target.value = value.toString()
                     handleRecoParam(recoParam, lower, upper)
                 }}
                 className={classnames("thumb thumbZindex3", {
@@ -37,10 +35,7 @@ export default function Slider({ min, max, handleRecoParam, recoParam}) {
                 value={upper}
                 onChange={(e)=>{
                     const value = Math.max(+e.target.value, lower)
-                    console.log(value)
                     setUpper(value)
-
-                    // e.target.value = value.toString()
                     handleRecoParam(recoParam, lower, upper)
 
                 }}

@@ -7,7 +7,6 @@ export default function useAuth(code) {
   const [expiresIn, setExpiresIn] = useState()
 
   useEffect(() => {
-      console.log('inside useAuth, code has changed to', code)
     axios
       .post("http://localhost:3001/login", {
         code,
@@ -37,7 +36,7 @@ export default function useAuth(code) {
         })
         .catch((error) => {
           window.location = "/"
-        console.log(error.message)
+          console.log(error.message)
         })
     }, (expiresIn - 60) * 1000)
 

@@ -1,31 +1,77 @@
 import React from "react"
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
-import { FaPlay, FaPlus, FaHeart, FaArrowUp } from "react-icons/fa";
+import { FaPlay, FaPlus, FaHeart, FaArrowUp, FaPause } from "react-icons/fa";
 import Playlists from './Playlists'
 
-export default function TrackSearchResult({ track, playTrack, selectTrack, spotifyApi, user }) {
-    const [added, setAdded] = useState()
+export default function TrackSearchResult({ track, playTrack, selectTrack, spotifyApi, user, playingStatus, playingTrack, changePlay }) {
+    const [addClicked, setAddClicked] = useState(false)
+    // const [playingStatus, setPlayingStatus]= useState(false)
+    const [inMyLibrary, setInMyLibrary] = useState(false)
+    const [added, setAdded] = useState(false)
+
+    useEffect(()=>{
+        spotifyApi.containsMySavedTracks([track.id])
+        .then(res=>{
+            setInMyLibrary(res.body[0])
+        }).catch(error=>{
+            console.log(error.message)
+        })
+
+    },[added])
     
     function handleAddTrack(){
         spotifyApi.addToMySavedTracks([track.id])
         .then(res => {
-            console.log(res, 'was added')
+            setAdded(true)  
         }).catch(error => {
             console.log(error.message)
         })
     }
-    function addToPlaylist(){
-        setAdded(track)
 
+    function handleRemovetrack(){
+        spotifyApi.removeFromMySavedTracks([track.id])
+        .then(res => {
+            setAdded(false)
+        }).catch(error=>{
+            console.log(error.message)
+        })
     }
-
+    function addToPlaylist(){
+        addClicked ? setAddClicked(false) : setAddClicked(true)
+    }
     return ( 
 
       <div className='recoTrack'>
-            
-            <div className='iconBox'>
-                <FaPlay className='play'onClick={()=>playTrack(track)}/>
+            <div 
+            className='iconBox'>
+                {   playingTrack.id !== track.id ?
+                        <FaPlay
+                            className='play'
+                            onClick={()=>{
+                            playTrack(track)
+                            changePlay(true)
+                    }
+                } />
+                    :
+                    (
+                        playingStatus ?
+                        <FaPause 
+                        className='pause'
+                        onClick={()=>{
+                            changePlay(false)
+                        }}
+                        />
+                        :
+                        <FaPlay
+                        className='play' 
+                        onClick={()=>{
+                            changePlay(true)
+                            // handlePlayingStatus()
+                        }}
+                        />
+                    )
+                }
             </div>
                 
             <img src={track.albumUrl} className='cover' />
@@ -35,13 +81,19 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
             </div>
             <div className="icons">
                 <div className='iconBox'>
-                    <FaHeart className='play' onClick={handleAddTrack}/>
+                    {
+                        inMyLibrary ?
+                        <FaHeart className='liked' onClick={handleRemovetrack}/>
+                        :
+                        <FaHeart className='like' onClick={handleAddTrack}/>
+
+                    }
                 </div>
                 <div className='iconBox'>
-                    <FaPlus className='play'onClick={addToPlaylist}/>
+                    <FaPlus className='plus' onClick={addToPlaylist}/>
                 </div>
                 {
-                    added ?
+                    addClicked ?
                     <Playlists track={track} spotifyApi={spotifyApi} user={user}/>
                     :
                     <></>

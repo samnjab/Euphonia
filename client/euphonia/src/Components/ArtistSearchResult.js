@@ -1,6 +1,5 @@
 export default function TrackSearchResult({ artist, selectArtist }) {
     function handleSelect() {
-        console.log('selected artist is ', artist)
         selectArtist(artist)
     }
 

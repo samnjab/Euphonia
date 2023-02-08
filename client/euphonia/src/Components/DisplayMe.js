@@ -9,16 +9,34 @@ export default function DisplayMe({ accessToken, spotifyApi }){
             const {display_name, email, country, images} = res.body
             setUserDetails({name:display_name, email:email, country:country, image:images[0].url})
         }).catch(error=>{
-            console.log(error.message)
+            return
         })
     }, [accessToken])
     return(
+        
         <div className='userInfo'>
-            <img src={userDetails.image} className='cover' />
-            <div className='text'>
-                <h5 className='username'> {userDetails.name}</h5>
-                <p className='userEmail'>{userDetails.email}</p>
-            </div>
+            {
+                userDetails.image ?
+                <img src={userDetails.image} className='cover' />
+                :
+                <></>
+            }
+                <div className='text'>
+                    {userDetails.name ?
+                    <h5 className='username'> {userDetails.name}</h5>
+                    :
+                    <></>
+                    }
+                    {
+                        userDetails.email ?
+                        <p className='userEmail'>{userDetails.email}</p>
+                        :
+                        <></>
+                    }
+                    
+                    
+                </div>
+
         </div>
     )
 

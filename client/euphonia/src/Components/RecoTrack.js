@@ -15,7 +15,7 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
         .then(res=>{
             setInMyLibrary(res.body[0])
         }).catch(error=>{
-            console.log(error.message)
+            return
         })
 
     },[added])
@@ -25,7 +25,8 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
         .then(res => {
             setAdded(true)  
         }).catch(error => {
-            console.log(error.message)
+            prompt('Oops! could not add to library. Try again in a bit!')
+            return
         })
     }
 
@@ -34,7 +35,7 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
         .then(res => {
             setAdded(false)
         }).catch(error=>{
-            console.log(error.message)
+            prompt('Oops! could not remove from library. Try again in a bit!')
         })
     }
     function addToPlaylist(){
@@ -67,7 +68,6 @@ export default function TrackSearchResult({ track, playTrack, selectTrack, spoti
                         className='play' 
                         onClick={()=>{
                             changePlay(true)
-                            // handlePlayingStatus()
                         }}
                         />
                     )

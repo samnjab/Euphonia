@@ -5,24 +5,27 @@ export default function Playlists({track, spotifyApi, user}){
     useEffect(()=>{
         spotifyApi.getUserPlaylists(user.id).then(res=>{
             setPlaylists(res.body.items)
-        }).catch(error=>[
-            console.log(error.message)
-        ])
+        }).catch(error=>{
+            return
+        })
     },[])
     return(
         <ul className='playlists'>
-            {
-                playlists.map(playlist=>{
-                    return (
-                        <li className='playlist' key={playlist.id}>
-                            <div className='iconBox'>
-                                {/* <FaCheck className='check' 
-                                onClick={()=>addTrack(track)}/> */}
-                            </div>
-                            {playlist.name}
-                        </li>
-                    )
-                })
+
+            {   playlists ?
+                    playlists.map(playlist=>{
+                        return (
+                            <li className='playlist' key={playlist.id}>
+                                <div className='iconBox'>
+                                    {/* <FaCheck className='check' 
+                                    onClick={()=>addTrack(track)}/> */}
+                                </div>
+                                {playlist.name}
+                            </li>
+                        )
+                    })
+                :
+                <></>
             }
             
         </ul>

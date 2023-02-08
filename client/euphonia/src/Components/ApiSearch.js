@@ -7,6 +7,7 @@ import DisplayArtist from "./DisplayArtist"
 import RecoTrack from './RecoTrack'
 import Player from './Player'
 import Slider from './Slider'
+import Error from './Error'
 export default function ApiSearch({ param, spotifyApi, accessToken, user}){
     const [trackSearch, setTrackSearch] = useState('')
     const [artistSearch, setArtistSearch] = useState('')
@@ -140,7 +141,6 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
             )
 
         }).catch(error=>{
-            // console.log(error.message)
             return 
         })
     
@@ -318,7 +318,7 @@ export default function ApiSearch({ param, spotifyApi, accessToken, user}){
                             spotifyApi={spotifyApi} 
                             key={track.uri}/>
                 })
-                :  <div> No recos </div>
+                :  <Error message={'No recos!'}/>
                     
                 }
             </div>

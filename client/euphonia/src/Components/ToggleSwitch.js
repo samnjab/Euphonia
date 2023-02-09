@@ -1,5 +1,4 @@
-import "../componentStyles/ToggleSwitch.css";
-  
+
 const ToggleSwitch = ({ label, searchBy}) => {
   return (
     <div className="container">

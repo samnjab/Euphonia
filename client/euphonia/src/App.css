@@ -107,7 +107,7 @@ main{
 .wrapper{
   width:90%;
   margin:0 auto;
-  max-width:1000px;
+  max-width:900px;
 }
 .topRow{
   max-width:100%;
@@ -364,8 +364,7 @@ label:nth-of-type(2n) {
 }
 
 .checkbox:checked+.label .switch {
-  /* right: 0px; */
-  left: 140px;
+  left: 160px;
 }
 /* end of toggle switch styles */
 
@@ -480,7 +479,6 @@ label:nth-of-type(2n) {
   align-items:center;
 }
 .info h5{
-  /* max-width:8rem; */
   text-align:left;
   
 }
@@ -540,6 +538,15 @@ label:nth-of-type(2n) {
 }
 .playlist{
   margin:5px 0;
+}
+footer{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-size:0.7rem;
+  text-align:center;
+  margin:2rem 0;
 }
 
 

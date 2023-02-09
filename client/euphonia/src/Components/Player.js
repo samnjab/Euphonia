@@ -1,4 +1,3 @@
-// dev branch
 import SpotifyPlayer from "react-spotify-web-playback"
 
 export default function Player({ accessToken, track, listOfTracks, playingStatus, changePlay, changePlayingTrack }) {

@@ -1,4 +1,3 @@
-// dev branch
 export default function DisplayArtist({ artist, deselectArtist }){
     const handleDeselectArtist = () => {
         deselectArtist(artist)

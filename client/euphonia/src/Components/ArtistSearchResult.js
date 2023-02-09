@@ -1,4 +1,3 @@
-// dev branch
 export default function TrackSearchResult({ artist, selectArtist }) {
     function handleSelect() {
         selectArtist(artist)

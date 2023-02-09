@@ -1,5 +1,4 @@
 import react from 'react'
-// dev branch 
 import WebFont from 'webfontloader';
 import { useEffect } from 'react'
 import Login from "./Components/Login"
@@ -27,6 +26,7 @@ function App() {
         <main>
             {code ? <Dashboard code={code} /> : <Login />}
         </main>
+        <footer><p>Powered by Spotify API</p><p>by Sam J. @ Juno</p></footer>
     </div>
 
   )

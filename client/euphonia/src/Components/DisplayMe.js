@@ -1,4 +1,3 @@
-// dev branch
 import {useEffect, useState} from 'react'
 export default function DisplayMe({ accessToken, spotifyApi }){
     const [userDetails, setUserDetails] = useState({})

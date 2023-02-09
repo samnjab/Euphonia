@@ -1,4 +1,3 @@
-// dev branch
 // Modules
 import SpotifyWebApi from "spotify-web-api-node"
 import axios from "axios"
